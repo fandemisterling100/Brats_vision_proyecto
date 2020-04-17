@@ -233,13 +233,6 @@ imshow((y_test[100,:,:,0]))
 plt.show()
 imshow(preds_test_t[100,:,:,0], cmap='gray')
 plt.show()
-#----------------------------------------------------------------------------------------
-# METRICA
-dice = np.sum(preds_test_t[y_test==1])*2.0 / (np.sum(preds_test_t) + np.sum(y_test))
-print ('Dice similarity score is: ' + format(dice))
-# 22.7 con 0.4 UMBRAL
-# 22.8 con 0.39 UMBRAL
-
 
 # -----------------------------------------------------------------------------------
 # GUARDO LOS RESULTADOS
@@ -305,7 +298,11 @@ print ('Dice similarity score is: ' + format(dice))
 # 12. Aprender como congelar parcialmente la red
 # 13. Establecer un baseline y generar resultados (experimentos) a partir de eso
 
-################################
+# --------------------------------------------------------------------------------------
+#  MÉTRICAS
+
+# 22.7 con 0.4 UMBRAL
+# 22.8 con 0.39 UMBRAL
 
 def dice(im1, im2):
     """
@@ -343,4 +340,14 @@ def dice(im1, im2):
 # DICE TOTAL
 dice_result = dice(y_test,preds_test_t)
 print ('Dice coefficient is: ' + format(dice_result))
+
+# JACCARD
+def iou_coef(y_true, y_pred, smooth=1):
+  intersection = np.sum(np.abs(y_true * y_pred))
+  union = np.sum(y_true)+np.sum(y_pred)-intersection
+  iou = np.mean((intersection + smooth) / (union + smooth))
+  return iou
+
+jaccard_result = iou_coef(y_test,preds_test_t)
+print ('Jaccard Similarity is: ' + format(jaccard_result))
 
