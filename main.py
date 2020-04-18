@@ -13,7 +13,7 @@ Created on Fri Apr 17 23:56:05 2020
 import torch
 from torch.nn import CrossEntropyLoss
 from ModelUnet3d  import UnetModel, Trainer
-from tmp import UNet
+#from tmp import UNet
 from loss import DiceLoss
 from data_gen import get_data_paths, data_gen, batch_data_gen
 
@@ -30,21 +30,19 @@ def train_main(data_folder, in_channels, out_channels, learning_rate, no_epochs)
     :param no_epochs: number of epochs to train model
     :return: None
     """
-    model = UNet(in_dim=in_channels, out_dim=out_channels, num_filters=16)
+    model = UnetModel(in_channels=in_channels, out_channels=out_channels)
     optim = torch.optim.Adam(params=model.parameters(), lr=learning_rate)
     criterion = DiceLoss()
     trainer = Trainer(data_dir=data_folder, net=model, optimizer=optim, criterion=criterion, no_epochs=no_epochs)
     trainer.train(data_paths_loader=get_data_paths, dataset_loader=data_gen, batch_data_loader=batch_data_gen)
-
+    model_json = model.to_json()
+    with open("modelu.json", "w") as json_file:
+         json_file.write(model_json)
+    model.save_weights("model_inicial")
+    print("Saved model to disk")
 
 if __name__ == "__main__":
     data_dir = "train_pair.lst"
     train_main(data_folder=data_dir, in_channels=1, out_channels=1, learning_rate=0.0001, no_epochs=10)
 
 
-model_json = model.to_json()
-with open("modelu.json", "w") as json_file:
-    json_file.write(model_json)
-
-model.save_weights("model_inicial")
-print("Saved model to disk")
