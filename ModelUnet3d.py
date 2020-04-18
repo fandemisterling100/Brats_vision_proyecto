@@ -14,9 +14,10 @@ import time
 import torch
 import torch.nn as nn
 import pandas as pd
-from unet3d_model.building_components import EncoderBlock, DecoderBlock
+from building_components import EncoderBlock, DecoderBlock
 sys.path.append("..")
-
+import os
+os.environ['CUDA_VISIBLE_DEVICES'] = "1"
 
 class UnetModel(nn.Module):
 
@@ -68,8 +69,8 @@ class Trainer(object):
         :return: None
         """
         # self.net.train()
-        lista= pd.read_csv(self.data_dir, dtype=str, delimiter=' ', header=None)
-        img_paths =listas.iloc[:,0]
+        lista= pd.read_csv("train_pair.lst", dtype=str, delimiter=' ', header=None)
+        img_paths =lista.iloc[:,0]
         print(img_paths)
         mask_paths = lista.iloc[:,1]
         img, masks = dataset_loader(img_paths, mask_paths)
