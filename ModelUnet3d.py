@@ -13,6 +13,7 @@ import sys
 import time
 import torch
 import torch.nn as nn
+import pandas as pd
 from unet3d_model.building_components import EncoderBlock, DecoderBlock
 sys.path.append("..")
 
@@ -49,7 +50,7 @@ class Trainer(object):
         :param batch_size: batch size for generating data during training
         """
         self.data_dir = data_dir
-        self.modalities = ["PET", "MASK"]
+        
         self.net = net
         if torch.cuda.is_available():
             self.net.cuda()
@@ -67,11 +68,12 @@ class Trainer(object):
         :return: None
         """
         # self.net.train()
-        pet_paths = data_paths_loader(self.data_dir, self.modalities[0])
-        print(pet_paths)
-        mask_paths = data_paths_loader(self.data_dir, self.modalities[1])
-        pets, masks = dataset_loader(pet_paths, mask_paths)
-        training_steps = len(pets) // self.batch_size
+        lista= pd.read_csv(self.data_dir, dtype=str, delimiter=' ', header=None)
+        img_paths =listas.iloc[:,0]
+        print(img_paths)
+        mask_paths = lista.iloc[:,1]
+        img, masks = dataset_loader(img_paths, mask_paths)
+        training_steps = len(img) // self.batch_size
 
         for epoch in range(self.no_epochs):
             start_time = time.time()
@@ -79,7 +81,7 @@ class Trainer(object):
             for step in range(training_steps):
                 print("Training step {}".format(step))
 
-                x_batch, y_batch = batch_data_loader(pets, masks, iter_step=step, batch_size=self.batch_size)
+                x_batch, y_batch = batch_data_loader(img, masks, iter_step=step, batch_size=self.batch_size)
                 x_batch = torch.from_numpy(x_batch).cuda()
                 y_batch = torch.from_numpy(y_batch).cuda()
 
