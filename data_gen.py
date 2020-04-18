@@ -37,26 +37,26 @@ def data_gen(data_paths, mask_paths):
     :return: PET images with batch and
     """
     no_samples = len(data_paths)
-    pet_imgs = np.zeros(shape=(no_samples, 1, 128, 128, 128), dtype=np.float32)   # change patch shape if necessary
-    mask_imgs = np.zeros(shape=(no_samples, 1, 128, 128, 128), dtype=np.float32)
-    for i, (pet_path, mask_path) in tqdm(enumerate(zip(data_paths, mask_paths)), total=no_samples):
+    imgs = np.zeros(shape=(no_samples, 240, 240, 155), dtype=np.float32)   # change patch shape if necessary
+    mask_imgs = np.zeros(shape=(no_samples, 240, 240, 155), dtype=np.float32)
+    for i, (img_path, mask_path) in tqdm(enumerate(zip(data_paths, mask_paths)), total=no_samples):
         # print(pet_path)
-        pet = sitk.GetArrayFromImage(sitk.ReadImage(pet_path))
+        img = sitk.GetArrayFromImage(sitk.ReadImage(img_path))
         mask = sitk.GetArrayFromImage(sitk.ReadImage(mask_path))
         # insert one dimension to the existing data as image channel
-        pet = np.expand_dims(pet, axis=0)
-        mask = np.expand_dims(mask, axis=0)
+        #pet = np.expand_dims(pet, axis=0)
+        #mask = np.expand_dims(mask, axis=0)
 
         # append image
-        pet_imgs[i] = pet
+        imgs[i] = img
         mask_imgs[i] = mask
 
     # Normalize data and convert label value to either 1 or 0
-    pet_imgs = pet_imgs / 255.
+    imgs = pet_imgs / 255.
     mask_imgs = label_converter(mask_imgs)
 
     print("Loading and Process Complete!")
-    return pet_imgs, mask_imgs
+    return imgs, mask_imgs
 
 
 def batch_data_gen(pet_imgs, mask_imgs, iter_step, batch_size=6):
