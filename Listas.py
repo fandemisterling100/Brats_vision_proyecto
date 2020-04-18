@@ -1,7 +1,7 @@
 #Intento de organizar Train, Val y Test
 import glob
 import os
-todos=glob.glob(os.path.join('*','*','*','*.nii.gz'))
+todos=glob.glob(os.path.join('*','*','*','*.nii'))
 if len(todos) == 0:
     todos=glob.glob(os.path.join('*','*','*','*.gz'))
 test=[]
