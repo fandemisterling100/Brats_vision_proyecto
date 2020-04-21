@@ -23,8 +23,11 @@ class UnetModel(nn.Module):
 
     def __init__(self, in_channels, out_channels, model_depth=4, final_activation="sigmoid"):
         super(UnetModel, self).__init__()
+        print("Entro a UnetModel y va a encoderBlock")
         self.encoder = EncoderBlock(in_channels=in_channels, model_depth=model_depth)
+        print("Termino encoder va a decoder")
         self.decoder = DecoderBlock(out_channels=out_channels, model_depth=model_depth)
+        print("Termino decoder")
         if final_activation == "sigmoid":
             self.sigmoid = nn.Sigmoid()
         else:
