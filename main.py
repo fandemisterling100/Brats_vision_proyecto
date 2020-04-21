@@ -30,7 +30,9 @@ def train_main(data_folder, in_channels, out_channels, learning_rate, no_epochs)
     :param no_epochs: number of epochs to train model
     :return: None
     """
+    print("Entro")
     model = UnetModel(in_channels=in_channels, out_channels=out_channels)
+    print("Acabo el modelo")
     optim = torch.optim.Adam(params=model.parameters(), lr=learning_rate)
     criterion = DiceLoss()
     trainer = Trainer(data_dir=data_folder, net=model, optimizer=optim, criterion=criterion, no_epochs=no_epochs)
@@ -43,6 +45,7 @@ def train_main(data_folder, in_channels, out_channels, learning_rate, no_epochs)
 
 if __name__ == "__main__":
     data_dir = "train_pair.lst"
+    print("Entrando a train_main")
     train_main(data_folder=data_dir, in_channels=1, out_channels=1, learning_rate=0.0001, no_epochs=10)
 
 
