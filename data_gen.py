@@ -36,6 +36,8 @@ def data_gen(data_paths, mask_paths):
     :param mask_paths: paths for mask images
     :return: PET images with batch and
     """
+    2634
+    
     no_samples = len(data_paths)
     imgs = np.zeros(shape=(no_samples, 240, 240, 155), dtype=np.float32)   # change patch shape if necessary
     mask_imgs = np.zeros(shape=(no_samples, 240, 240, 155), dtype=np.float32)
@@ -59,7 +61,7 @@ def data_gen(data_paths, mask_paths):
     return imgs, mask_imgs
 
 
-def batch_data_gen(pet_imgs, mask_imgs, iter_step, batch_size=6):
+def batch_data_gen(imgs, mask_imgs, iter_step, batch_size=3):
     """
     Get training batch to feed convolution neural network
     :param pet_imgs: the whole batch of pet images
@@ -68,16 +70,20 @@ def batch_data_gen(pet_imgs, mask_imgs, iter_step, batch_size=6):
     :param batch_size: batch size to generate
     :return: batch images and batch masks
     """
+    
     # shuffling data
+    print("entra a batch data gen")
     permutation_idxs = np.random.permutation(len(pet_imgs))
-    pet_imgs = pet_imgs[permutation_idxs]
+    print("pemutacicion")
+    imgs = imgs[permutation_idxs]
+    print("Ya adecuacion imagenes")
     mask_imgs = mask_imgs[permutation_idxs]
+    print("Ya adecuacion de mascaras ")
 
     # count iteration step to get corresponding training batch
     step_count = batch_size * iter_step
-    print(step_count)
-    return pet_imgs[step_count: batch_size + step_count], mask_imgs[step_count: batch_size + step_count]
-
+    print("step_count es:",step_count)
+    return imgs[step_count: batch_size + step_count], mask_imgs[step_count: batch_size + step_count]
 
 if __name__ == "__main__":
     import natsort
