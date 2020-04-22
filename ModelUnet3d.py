@@ -77,6 +77,7 @@ class Trainer(object):
         print(img_paths)
         mask_paths = lista.iloc[:,1]
         img, masks = dataset_loader(img_paths, mask_paths)
+        print(masks)
         training_steps = len(img) // self.batch_size
 
         for epoch in range(self.no_epochs):
