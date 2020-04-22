@@ -53,7 +53,7 @@ def data_gen(data_paths, mask_paths):
         mask_imgs[i] = mask
 
     # Normalize data and convert label value to either 1 or 0
-    imgs = pet_imgs / 255.
+    imgs = imgs / 255.
     mask_imgs = label_converter(mask_imgs)
 
     print("Loading and Process Complete!")
