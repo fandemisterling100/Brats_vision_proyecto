@@ -81,11 +81,11 @@ class Trainer(object):
         training_steps = len(img) // self.batch_size
 
         for epoch in range(self.no_epochs):
+            print("epoch")
             start_time = time.time()
             train_losses, train_iou = 0, 0
             for step in range(training_steps):
                 print("Training step {}".format(step))
-
                 x_batch, y_batch = batch_data_loader(img, masks, iter_step=step, batch_size=self.batch_size)
                 print("Ya fue a batch_data loader_")
                 x_batch = torch.from_numpy(x_batch).cuda()
