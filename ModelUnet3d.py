@@ -87,14 +87,19 @@ class Trainer(object):
                 print("Training step {}".format(step))
 
                 x_batch, y_batch = batch_data_loader(img, masks, iter_step=step, batch_size=self.batch_size)
+                print("Ya fue a batch_data loader_")
                 x_batch = torch.from_numpy(x_batch).cuda()
+                print("X_batch en cuda")
                 y_batch = torch.from_numpy(y_batch).cuda()
+                print("y_batch en cuda")
 
                 self.optimizer.zero_grad()
 
                 logits = self.net(x_batch)
+                print("logistis ya")
                 y_batch = y_batch.type(torch.int8)
                 loss = self.criterion(logits, y_batch)
+                print("perdida ya ")
                 loss.backward()
                 self.optimizer.step()
                 # train_iou += mean_iou(y_batch, logits)
