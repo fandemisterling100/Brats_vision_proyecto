@@ -32,11 +32,13 @@ class ConvBlock(nn.Module):
 class EncoderBlock(nn.Module):
     def __init__(self, in_channels, model_depth=4, pool_size=2):
         super(EncoderBlock, self).__init__()
+        print("Entro a EncoderBlock")
         self.root_feat_maps = 16
         self.num_conv_blocks = 2
         # self.module_list = nn.ModuleList()
         self.module_dict = nn.ModuleDict()
         for depth in range(model_depth):
+            print("empieza a hacer convoluciones")
             feat_map_channels = 2 ** (depth + 1) * self.root_feat_maps
             for i in range(self.num_conv_blocks):
                 # print("depth {}, conv {}".format(depth, i))
