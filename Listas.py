@@ -2,6 +2,8 @@
 import glob
 import os
 todos=glob.glob(os.path.join('*','*','*','*.nii'))
+if len(todos) == 0:
+    todos=glob.glob(os.path.join('*','*','*','*.gz'))
 test=[]
 val=[]
 train=[]
