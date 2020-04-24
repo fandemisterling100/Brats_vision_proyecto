@@ -38,8 +38,8 @@ def data_gen(data_paths, mask_paths):
     """
     
     no_samples = len(data_paths)
-    imgs = np.zeros(shape=(no_samples, 155, 240, 240), dtype=np.float32)   # change patch shape if necessary
-    mask_imgs = np.zeros(shape=(no_samples, 155, 240, 240), dtype=np.float32)
+    imgs = np.zeros(shape=(1,no_samples, 155, 240, 240), dtype=np.float32)   # change patch shape if necessary
+    mask_imgs = np.zeros(shape=(1,no_samples, 155, 240, 240), dtype=np.float32)
     for i, (img_path, mask_path) in tqdm(enumerate(zip(data_paths, mask_paths)), total=no_samples):
         # print(pet_path)
         img = sitk.GetArrayFromImage(sitk.ReadImage(img_path))
