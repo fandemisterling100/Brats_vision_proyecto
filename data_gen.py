@@ -52,7 +52,10 @@ def data_gen(data_paths, mask_paths):
         imgs[0,i,:,:,:] = img
         mask_imgs[0,i,:,:] = mask
 
+
     # Normalize data and convert label value to either 1 or 0
+    imgs[0,:,:,:,:] = 3
+    mask_imgs[0,:,:,:,:] = 3
     imgs = imgs / 255.
     mask_imgs = label_converter(mask_imgs)
 
