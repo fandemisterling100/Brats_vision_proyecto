@@ -72,7 +72,7 @@ def batch_data_gen(imgs, mask_imgs, iter_step, batch_size=3):
     
     # shuffling data
     print("entra a batch data gen")
-    permutation_idxs = np.random.permutation(len(pet_imgs))
+    permutation_idxs = np.random.permutation(len(imgs))
     print("pemutacicion")
     imgs = imgs[permutation_idxs]
     print("Ya adecuacion imagenes")

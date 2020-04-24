@@ -74,10 +74,10 @@ class Trainer(object):
         # self.net.train()
         lista= pd.read_csv("train_pair.lst", dtype=str, delimiter=' ', header=None)
         img_paths =lista.iloc[:,0]
-        print(img_paths)
+        #print(img_paths)
         mask_paths = lista.iloc[:,1]
         img, masks = dataset_loader(img_paths, mask_paths)
-        print(masks)
+        #print(masks)
         training_steps = len(img) // self.batch_size
 
         for epoch in range(self.no_epochs):
