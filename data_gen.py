@@ -49,8 +49,8 @@ def data_gen(data_paths, mask_paths):
         #mask = np.expand_dims(mask, axis=0)
 
         # append image
-        imgs[i] = img[:,:,0:3]
-        mask_imgs[i] = mask[:,:,0:3]
+        imgs[i] = img
+        mask_imgs[i] = mask
 
     # Normalize data and convert label value to either 1 or 0
     imgs = imgs / 255.
