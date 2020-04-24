@@ -37,8 +37,8 @@ def extract_brain_region(image, brain_mask, background=0):
 # CARGA DE DATOS
 
 # Defino carpeta de entrenamiento
-TRAIN_PATH = 'data/train/train'
-TEST_PATH = 'data/validation'
+TRAIN_PATH = 'data/images'
+TEST_PATH = 'data/images'
 
 # Defino dimensiones de las imagenes
 IMG_WIDTH = 128
@@ -60,7 +60,7 @@ plt.show()
 y_train = np.zeros((len(train_ids)*IMG_CHANELS*1, IMG_WIDTH, IMG_HEIGHT, 1), dtype=np.bool)
 
 print('Ajustando tamano de imagenes y las mascaras de entrenamiento')
-modalidades = ['_t1.nii.gz']
+modalidades = ['_flair.nii.gz']
 #modalidades = ['_t1.nii.gz', '_t1ce.nii.gz', '_t2.nii.gz', '_flair.nii.gz']
 
 # Voy a recorrer cada id y genero una barra de progreso
@@ -224,7 +224,7 @@ plt.show()
 # Hallo las predicciones
 preds_test = model.predict(x_test, verbose=1)
 # Umbralizo el mapa de probabilidades que obtengo para binarizar el resultado
-preds_test_t = (preds_test>0.1).astype(np.uint8)
+preds_test_t = (preds_test>0.36).astype(np.uint8)
 
 # Muestro un resultado con su corte real, anotación y predicción
 imshow(x_test[100,:,:,0], cmap='gray')
@@ -239,21 +239,21 @@ plt.show()
 
 # GUARDAR ANOTACIONES Y PREDICCIONES
 
-with open('outs.pkl', 'wb') as f:  # Python 3: open(..., 'wb')
+with open('outs_flair_con_umbral_0-36.pkl', 'wb') as f:  # Python 3: open(..., 'wb')
     pickle.dump([y_test, preds_test_t], f)
 
 
 # GUARDO MODELO:
-model.save('my_model') 
+model.save('my_model_flair') 
 
 # OTRA OPCIÓN DE GUARDADO:
 
 # serialize model to JSON
 model_json = model.to_json()
-with open("model.json", "w") as json_file:
+with open("model.json_flair", "w") as json_file:
     json_file.write(model_json)
 # serialize weights to HDF5
-model.save_weights("model_inicial_dice55.h5")
+model.save_weights("model_inicial_flair.h5")
 print("Saved model to disk")
 
 
@@ -293,7 +293,6 @@ print ('Dice similarity score is: ' + format(dice))
 # 7. Revisar loop de entrenamiento
 # 8. Entrenar con cada modalidad de manera individual
 # 9. Indicar que se corra en GPU y no CPU
-# 10. Probar las metricas a usar con áreas conocidas (dos cuadrados sobrelapados)
 # 11. Hacer pruebas con pesos cargados de imagenet
 # 12. Aprender como congelar parcialmente la red
 # 13. Establecer un baseline y generar resultados (experimentos) a partir de eso
@@ -350,4 +349,27 @@ def iou_coef(y_true, y_pred, smooth=1):
 
 jaccard_result = iou_coef(y_test,preds_test_t)
 print ('Jaccard Similarity is: ' + format(jaccard_result))
+
+
+# T2
+#con 0.1 el dice es 0.5745 y el jac de 0.4030
+# con 0.15 dice de 0.6097 y jac de 0.4385
+# con 0.2 el dice es 0.63441 y el jac es 0.46457
+# con 0.3 el dice es 0.6627 y el jac es 0.49557
+# con 0.4 el dice es 0.659 y el jac 0.4917
+# con 0.35 el dice es 0.66439 y el jac es 0.49745 (MEJOR)
+# con 0.36 el dice es 0.63399 y el jac es 0.49700
+# con 0.34 el dice es 0.64496 y el jac es 0.49756 
+# con 0.33 el dice es 0.66421 y el jac es 0.49725
+
+
+# FLAIR
+# con 0.34 dice de 58.21 y jac de 41.05
+# con 0.2 dice de 53.96 y jac de 36.94
+# con 0.3 dice de 57.829 y jac de 40.67
+# con 0.35 dice de 58.23 y jac de 41.08
+# con 0.4 dice de 58.02 y jac de 40.87
+# con 0.36 dice de 58.237 y jac de 41.081 (mejor)
+
+
 
