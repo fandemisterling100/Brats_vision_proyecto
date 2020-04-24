@@ -43,7 +43,7 @@ class UnetModel(nn.Module):
 
 class Trainer(object):
 
-    def __init__(self, data_dir, net, optimizer, criterion, no_epochs, batch_size=8):
+    def __init__(self, data_dir, net, optimizer, criterion, no_epochs, batch_size=3):
         """
         Parameter initialization
         :param data_dir: folder that stores images for each modality
@@ -78,6 +78,8 @@ class Trainer(object):
         mask_paths = lista.iloc[:,1]
         img, masks = dataset_loader(img_paths, mask_paths)
         #print(masks)
+        print(len(img))
+        print(self.batch_size)
         training_steps = len(img) // self.batch_size
 
         for epoch in range(self.no_epochs):
@@ -105,6 +107,7 @@ class Trainer(object):
                 # train_iou += mean_iou(y_batch, logits)
                 train_losses += loss.item()
             end_time = time.time()
+            print(training_steps)
             print("Epoch {}, training loss {:.4f}, time {:.2f}".format(epoch, train_losses / training_steps,
                                                                        end_time - start_time))
 
