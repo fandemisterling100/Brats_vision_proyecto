@@ -8,6 +8,7 @@ import numpy as np
 import SimpleITK as sitk
 from tqdm import tqdm
 from utils import normalize, label_converter
+from skimage.transform import resize
 np.set_printoptions(threshold=sys.maxsize)
 
 
@@ -38,8 +39,8 @@ def data_gen(data_paths, mask_paths):
     """
     
     no_samples = len(data_paths)
-    imgs = np.zeros(shape=(no_samples, 1, 155, 240, 240), dtype=np.float32)   # change patch shape if necessary
-    mask_imgs = np.zeros(shape=(no_samples, 1, 155, 240, 240), dtype=np.float32)
+    imgs = np.zeros(shape=(no_samples, 1, 30, 30, 30), dtype=np.float32)   # change patch shape if necessary
+    mask_imgs = np.zeros(shape=(no_samples, 1, 30, 30, 30), dtype=np.float32)
     for i, (img_path, mask_path) in tqdm(enumerate(zip(data_paths, mask_paths)), total=no_samples):
         # print(pet_path)
         img = sitk.GetArrayFromImage(sitk.ReadImage(img_path))
@@ -49,6 +50,9 @@ def data_gen(data_paths, mask_paths):
         #mask = np.expand_dims(mask, axis=0)
 
         # append image
+        img = resize(img, (30, 30, 30), mode='constant', preserve_range=True)
+        mask = resize(mask, (30, 30, 30), mode='constant', preserve_range=True)
+        
         imgs[i,0,:,:,:] = img
         mask_imgs[i,0,:,:] = mask
 
@@ -58,6 +62,8 @@ def data_gen(data_paths, mask_paths):
     mask_imgs[:,0,:,:,:] = 3
     imgs = imgs / 255.
     mask_imgs = label_converter(mask_imgs)
+
+    ## AQUI DEBE IR EL CORTE DE LA SECCIÓN DEL CEREBRO
 
     print("Loading and Process Complete!")
     return imgs, mask_imgs

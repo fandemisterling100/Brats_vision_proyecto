@@ -18,7 +18,7 @@ from loss import DiceLoss
 from data_gen import get_data_paths, data_gen, batch_data_gen
 
 import os
-os.environ['CUDA_VISIBLE_DEVICES'] = '1'
+os.environ['CUDA_VISIBLE_DEVICES'] = '0'
 
 def train_main(data_folder, in_channels, out_channels, learning_rate, no_epochs):
     """

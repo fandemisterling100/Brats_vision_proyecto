@@ -119,7 +119,7 @@ class Trainer(object):
 
 
 if __name__ == "__main__":
-    inputs = torch.randn(1, 1, 96, 96, 96)
+    inputs = torch.randn(1, 1, 30, 30, 30)
     print("The shape of inputs: ", inputs.shape)
     data_folder = "../processed"
     model = UnetModel(in_channels=1, out_channels=1)

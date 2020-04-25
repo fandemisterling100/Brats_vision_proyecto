@@ -118,9 +118,13 @@ class DecoderBlock(nn.Module):
         :param down_sampling_features: feature maps from encoder path
         :return: output
         """
+        
+        print (x.shape)
+        
         for k, op in self.module_dict.items():
             if k.startswith("deconv"):
                 x = op(x)
+                print((down_sampling_features[int(k[-1])]).shape)
                 x = torch.cat((down_sampling_features[int(k[-1])], x), dim=1)
             elif k.startswith("conv"):
                 x = op(x)
@@ -130,8 +134,8 @@ class DecoderBlock(nn.Module):
 
 
 if __name__ == "__main__":
-    # x has shape of (batch_size, channels, depth, height, width)
-    x_test = torch.randn(1, 1, 96, 96, 96)
+    # x has shape of (batch_size, channels, depth, height, width) antes 96,96,96
+    x_test = torch.randn(1, 1, 30, 30, 30)
     x_test = x_test.cuda()
     print("The shape of input: ", x_test.shape)
 
