@@ -23,11 +23,11 @@ class UnetModel(nn.Module):
 
     def __init__(self, in_channels, out_channels, model_depth=4, final_activation="sigmoid"):
         super(UnetModel, self).__init__()
-        print("Entro a UnetModel y va a encoderBlock")
+        #print("Entro a UnetModel y va a encoderBlock")
         self.encoder = EncoderBlock(in_channels=in_channels, model_depth=model_depth)
-        print("Termino encoder va a decoder")
+        #print("Termino encoder va a decoder")
         self.decoder = DecoderBlock(out_channels=out_channels, model_depth=model_depth)
-        print("Termino decoder")
+       # print("Termino decoder")
         if final_activation == "sigmoid":
             self.sigmoid = nn.Sigmoid()
         else:
@@ -78,8 +78,8 @@ class Trainer(object):
         mask_paths = lista.iloc[:,1]
         img, masks = dataset_loader(img_paths, mask_paths)
         #print(masks)
-        print(len(img))
-        print(self.batch_size)
+        #print(len(img))
+        #print(self.batch_size)
         training_steps = len(img) // self.batch_size
 
         for epoch in range(self.no_epochs):
@@ -89,19 +89,27 @@ class Trainer(object):
             for step in range(training_steps):
                 print("Training step {}".format(step))
                 x_batch, y_batch = batch_data_loader(img, masks, iter_step=step, batch_size=self.batch_size)
-                print("Ya fue a batch_data loader_")
+                #print("Ya fue a batch_data loader_")
                 x_batch = torch.from_numpy(x_batch).cuda()
-                print("X_batch en cuda")
+                #print("X_batch en cuda")
                 y_batch = torch.from_numpy(y_batch).cuda()
-                print("y_batch en cuda")
+               # print("y_batch en cuda")
 
                 self.optimizer.zero_grad()
 
                 logits = self.net(x_batch)
-                print("logistis ya")
+                #print("logistis ya")
                 y_batch = y_batch.type(torch.int8)
+                if (y_batch.shape[2] != logits.shape[2]):
+
+                    y_batch = y_batch[0: y_batch.shape[0], 0: y_batch.shape[1], 0: logits.shape[2], 0: logits.shape[2], 0: logits.shape[2]]
+
+                #print("shape del y batch")
+                #print(y_batch.shape)
+                #print(type(logits))
+                #print(type(y_batch))
                 loss = self.criterion(logits, y_batch)
-                print("perdida ya ")
+                #print("perdida ya ")
                 loss.backward()
                 self.optimizer.step()
                 # train_iou += mean_iou(y_batch, logits)

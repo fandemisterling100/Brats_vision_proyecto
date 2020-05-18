@@ -13,7 +13,7 @@ import numpy as np
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-
+from skimage.transform import resize
 
 class ConvBlock(nn.Module):
     def __init__(self, in_channels, out_channels, k_size=3, stride=1, padding=1):
@@ -32,13 +32,13 @@ class ConvBlock(nn.Module):
 class EncoderBlock(nn.Module):
     def __init__(self, in_channels, model_depth=4, pool_size=2):
         super(EncoderBlock, self).__init__()
-        print("Entro a EncoderBlock")
+        #print("Entro a EncoderBlock")
         self.root_feat_maps = 16
         self.num_conv_blocks = 2
         # self.module_list = nn.ModuleList()
         self.module_dict = nn.ModuleDict()
         for depth in range(model_depth):
-            print("empieza a hacer convoluciones")
+            #print("empieza a hacer convoluciones")
             feat_map_channels = 2 ** (depth + 1) * self.root_feat_maps
             for i in range(self.num_conv_blocks):
                 # print("depth {}, conv {}".format(depth, i))
@@ -63,12 +63,12 @@ class EncoderBlock(nn.Module):
         for k, op in self.module_dict.items():
             if k.startswith("conv"):
                 x = op(x)
-                print(k, x.shape)
+                #print(k, x.shape)
                 if k.endswith("1"):
                     down_sampling_features.append(x)
             elif k.startswith("max_pooling"):
                 x = op(x)
-                print(k, x.shape)
+                #print(k, x.shape)
 
         return x, down_sampling_features
 
@@ -119,13 +119,26 @@ class DecoderBlock(nn.Module):
         :return: output
         """
         
-        print (x.shape)
+        #print (x.shape[2])
         
         for k, op in self.module_dict.items():
             if k.startswith("deconv"):
                 x = op(x)
-                print((down_sampling_features[int(k[-1])]).shape)
-                x = torch.cat((down_sampling_features[int(k[-1])], x), dim=1)
+                diferencia = abs(x.shape[3] - (down_sampling_features[int(k[-1])]).shape[3])
+
+                if diferencia == 0:
+                    print((down_sampling_features[int(k[-1])]).shape)
+                    x = torch.cat((down_sampling_features[int(k[-1])], x), dim=1)
+                else:
+                    #down_sampling_features[int(k[-1])] = resize(down_sampling_features[int(k[-1])], ((down_sampling_features[int(k[-1])]).shape[0],(down_sampling_features[int(k[-1])]).shape[1], x.shape[3], x.shape[3], x.shape[3]), mode='constant', preserve_range=True)
+                    feature_d = down_sampling_features[int(k[-1])]
+                    new_dim = feature_d.shape[3]-diferencia
+                    #print(x.shape[3])
+                    #print((down_sampling_features[int(k[-1])]).shape[3])
+                    #print(diferencia)
+                    #print(new_dim)
+                    x = torch.cat((feature_d[:,:,0:new_dim,0:new_dim,0:new_dim], x), dim=1)
+                
             elif k.startswith("conv"):
                 x = op(x)
             else:
@@ -137,7 +150,7 @@ if __name__ == "__main__":
     # x has shape of (batch_size, channels, depth, height, width) antes 96,96,96
     x_test = torch.randn(1, 1, 30, 30, 30)
     x_test = x_test.cuda()
-    print("The shape of input: ", x_test.shape)
+    #print("The shape of input: ", x_test.shape)
 
     encoder = EncoderBlock(in_channels=1)
     encoder.cuda()

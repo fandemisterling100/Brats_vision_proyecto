@@ -22,8 +22,8 @@ class DiceLoss(nn.Module):
     def forward(self, targets, logits):
         batch_size = targets.size(0)
         # log_prob = torch.sigmoid(logits)
-        logits = logits.view(batch_size, -1).type(torch.FloatTensor)
-        targets = targets.view(batch_size, -1).type(torch.FloatTensor)
+        logits = logits.reshape(batch_size, -1).type(torch.FloatTensor)
+        targets = targets.reshape(batch_size, -1).type(torch.FloatTensor)
         intersection = (logits * targets).sum(-1)
         dice_score = 2. * intersection / ((logits + targets).sum(-1) + self.epsilon)
         # dice_score = 1 - dice_score.sum() / batch_size
